@@ -11,14 +11,18 @@ SUPERBOT = lambda {
   
     def spawn
       PTY.spawn('irb', '-f') do |outp, inp, pid|
-
+        
         BOT = lambda {
-          ## TODO == inp.write message
+          on :channel, // do
+            inp.write message
+          end
         }
         
         @bot = Isaac::Bot.new(&BOT)
+        #TODO config
         @bot.start
 
+        # this isn't quite right
         module BotWriter
         
           def initialize(bot, io)
@@ -31,13 +35,15 @@ SUPERBOT = lambda {
               detatch
             end
           end
-          
+
         end
 
+        #Thread.start {
         EM.run {
           conn = EM.watch BotWriter, @bot, outp
           conn.notify_readable = true
         }
+        #}
         
       end
     end
@@ -47,15 +53,17 @@ SUPERBOT = lambda {
   on :channel, /^!irb$/ do
     if @irb_on = !@irb_on
       spawn
-      raw "$SAFE = 4"
     else
       raw "exit"
     end
     
-    raw "===== IRB " + (@irb_on ? 'on' : 'off')
+    raw "##### IRB " + (@irb_on ? 'on' : 'off')
+    raw "$SAFE = 4" if irb_on
   end
    
 }
 
-Isaac::Bot.new(&SUPERBOT).start
+superbot = Isaac::Bot.new(&SUPERBOT)
+#TODO config
+superbot.start
 
