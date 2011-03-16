@@ -1,2 +1,2 @@
-config/listener.rb
-config/supervisor.rb
+./config/listener.rb
+./config/supervisor.rb
