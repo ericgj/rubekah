@@ -15,24 +15,6 @@ module IRBot
   
 end
 
-####### monkey patching
-module Isaac
-  module Builder
-  
-    def configure_from(file)
-      cfgfile = ::File.read(file)
-      cfgfile.sub!(/^__END__\n.*/, '')
-      #eval "self.configure {( " + cfgfile + "\n )}", binding, file
-      instance_eval(cfgfile)
-    end
-    
-  end
-  
-  class Bot
-    include Builder
-  end
-  
-end
 
 
 require_relative 'irbbot/runner'
